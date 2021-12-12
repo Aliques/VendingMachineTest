@@ -1,0 +1,27 @@
+.sidebar__container {
+  padding-top: 60px;
+  position: fixed;
+  width: 215px;
+  height: 100%;
+  background: #ffffff;
+  -webkit-box-shadow: 4px 0px 10px -3px rgba(93, 109, 151, 0.1);
+  -moz-box-shadow: 4px 0px 10px -3px rgba(93, 109, 151, 0.1);
+  box-shadow: 4px 0px 10px -3px rgba(93, 109, 151, 0.1);
+}
+
+.sidebar__list {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+.sidebar__list .row {
+  width: 100%;
+  height: 53px;
+  border-bottom: 0.5px solid rgba(93, 110, 151, 0.4);
+  list-style-type: none;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
