@@ -4,7 +4,9 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 using VendingMachineTest.Exstentions;
 using VendingMachineTest.Infrastructure;
 
@@ -39,7 +41,7 @@ namespace VendingMachineTest
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseCors(options => options.WithOrigins("https://localhost:44373/")
+            app.UseCors(options => options.WithOrigins("http://localhost:3000")
             .AllowAnyMethod()
             .AllowAnyHeader());
 
@@ -55,7 +57,11 @@ namespace VendingMachineTest
             }
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath,"Images")),
+                RequestPath = "/Images"
+            });
             app.UseSpaStaticFiles();
 
             app.UseRouting();

@@ -39,6 +39,7 @@ namespace VendingMachineTest.Infrastructure.Repositories
                     ImageSrc= String.Format("{0}://{1}{2}/Images/{3}", 
                     httpRequest.Scheme, httpRequest.Host, httpRequest.PathBase, x.ImageName),
                     Title = x.Title,
+                    Quantity=x.Quantity,
                     ImageName = x.ImageName
                 }).ToListAsync();
 

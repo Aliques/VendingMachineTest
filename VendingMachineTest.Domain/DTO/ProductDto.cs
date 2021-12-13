@@ -1,7 +1,10 @@
-﻿namespace VendingMachineTest.Domain.DTO
+﻿using System;
+
+namespace VendingMachineTest.Domain.DTO
 {
     public class ProductDto
     {
+        public Guid Guid { get; set; }
         public string Title { get; set; }
 
         public string ImageName { get; set; }

@@ -1,0 +1,11 @@
+.container {
+  padding: 60px;
+  width: 100%;
+  display: -webkit-flex;
+  align-content: flex-start;
+  -webkit-flex-flow: row wrap;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  gap: 40px;
+}
