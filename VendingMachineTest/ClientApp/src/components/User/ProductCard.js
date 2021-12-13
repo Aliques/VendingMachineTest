@@ -6,6 +6,7 @@ export class ProductCard extends Component {
     super();
     this.state = {
       data: props.data,
+      quantity: props.data.quantity,
     };
   }
 

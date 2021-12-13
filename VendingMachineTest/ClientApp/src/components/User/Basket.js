@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import classes from './Basket.module.css';
+import { Coins } from './Coins';
 export class Basket extends Component {
   constructor(props) {
     super();
@@ -8,7 +9,9 @@ export class Basket extends Component {
       totalCost: 0,
     };
   }
-
+  depositChanged = (value) => {
+    this.props.depositChanged(value);
+  };
   calculateTotalCost = () => {
     this.setState({
       totalCost: this.state.cartItems.reduce((a, c) => a + c.cost * c.qty, 0),
@@ -21,33 +24,49 @@ export class Basket extends Component {
 
   render() {
     return (
-      <div className={classes.container}>
-        <div className={classes.title}>Your choice</div>
-        {this.state.cartItems.length === 0 && (
-          <div className={classes['empty-dialog']}>Select drinks</div>
-        )}
-        {this.state.cartItems.map((item) => (
-          <div key={item.guid}>
-            <div className="col-2">{item.title}</div>
-            <div className="col-2">
-              <button onClick={() => this.props.onAdd(item)} className="add">
-                +
-              </button>
-              <button
-                onClick={() => this.props.onRemove(item)}
-                className="remove"
-              >
-                -
-              </button>
-              <div className="col-2 text-right">
-                {item.qty} x ${item.cost.toFixed(2)}
+      <div>
+        <div className={classes['basket-container']}>
+          <div className={classes.title}>Your choice</div>
+          {this.state.cartItems.length === 0 && (
+            <div className={classes['empty-dialog']}>Select drinks</div>
+          )}
+          {this.state.cartItems.map((item) => (
+            <div className={classes.itemContainer} key={item.guid}>
+              <div className={classes['item-name']}>{item.title}</div>
+              <div className={classes['item-buttons']}>
+                <button
+                  onClick={() => this.props.onAdd(item)}
+                  className={classes['item-add__btn']}
+                >
+                  +
+                </button>
+                <button
+                  onClick={() => this.props.onRemove(item)}
+                  className={classes['item-remove__btn']}
+                >
+                  -
+                </button>
+                <div>
+                  {item.qty} x ¥{item.cost.toFixed(2)}
+                </div>
               </div>
             </div>
-          </div>
-        ))}
-        {this.state.cartItems.length !== 0 && (
-          <div>Total cost: {this.state.totalCost}</div>
-        )}
+          ))}
+          {this.state.cartItems.length !== 0 && (
+            <div className={classes.total}>
+              Total cost: {this.state.totalCost} ¥
+            </div>
+          )}
+          {this.state.cartItems.length !== 0 && (
+            <div className={classes['buy-btn']}>
+              Total cost: {this.state.totalCost} ¥
+            </div>
+          )}
+        </div>
+        <Coins
+          deposit={this.state.deposit}
+          depositChanged={this.depositChanged}
+        />
       </div>
     );
   }

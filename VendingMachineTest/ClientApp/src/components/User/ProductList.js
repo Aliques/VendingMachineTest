@@ -6,21 +6,22 @@ export class ProductList extends Component {
   constructor(props) {
     super();
     this.state = {
-      data: null,
-      isFetching: true,
-      error: null,
+      data: props.productData,
     };
-    console.log(2);
   }
 
-  componentDidMount() {
-    fetch('https://localhost:44373/Product')
-      .then((resp) => resp.json())
-      .then((result) => this.setState({ data: result, isFetching: false }))
-      .catch((e) => {
-        this.setState({ data: null, isFetching: false, error: e });
-      });
-  }
+  // componentDidMount() {
+  //   fetch('https://localhost:44373/Product')
+  //     .then((resp) => resp.json())
+  //     .then((result) => this.setState({ data: result, isFetching: false }))
+  //     .catch((e) => {
+  //       this.setState({ data: null, isFetching: false, error: e });
+  //     });
+  // }
+
+  changeProductList = (cardItems) => {
+    this.setState({ productData: this.props.productData });
+  };
 
   render() {
     const { data, isFetching, error } = this.state;
@@ -29,7 +30,6 @@ export class ProductList extends Component {
     }
 
     if (error) return <div>{`Error: ${error.message}`}</div>;
-    console.log(data);
     return (
       <div className={classes.container}>
         {data.map((product) => (
