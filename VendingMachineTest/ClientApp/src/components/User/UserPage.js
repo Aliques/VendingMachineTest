@@ -26,6 +26,7 @@ export class UserPage extends Component {
       .catch((e) => {
         this.setState({ productData: null, isFetching: false, error: e });
       });
+    console.log('123');
   }
 
   depositChanged = (value) => {
@@ -33,7 +34,11 @@ export class UserPage extends Component {
   };
 
   onAdd = (product) => {
-    if (product.quantity === 0) {
+    const chnangableProduct = this.state.productData.find(
+      (x) => x.guid === product.guid
+    );
+
+    if (chnangableProduct.quantity === 0) {
       toast.warning('Product is out of stock!', {
         autoClose: 3000,
         position: 'top-right',
@@ -44,7 +49,6 @@ export class UserPage extends Component {
     let totalCost =
       this.state.cartItems.reduce((a, c) => a + c.cost * c.qty, 0) +
       product.cost;
-
     if (product.cost > this.state.deposit) {
       toast.warning('Insufficient funds!', {
         autoClose: 3000,
@@ -74,7 +78,6 @@ export class UserPage extends Component {
         cartItems: createdItem,
       });
     }
-    console.log(1);
     const cloneIndex = this.state.productData.findIndex(
       (obj) => obj.guid === product.guid
     );
@@ -98,20 +101,12 @@ export class UserPage extends Component {
         cartItems: changedItems,
       });
     }
-  };
-
-  productQuantityChanged = (operation) => {
-    if (operation === 'decrement') {
-      let calc = this.state.quantity - 1;
-      this.setState((prev) => {
-        return { quantity: calc };
-      });
-    } else if (operation === 'increment') {
-      let calc = this.state.quantity + 1;
-      this.setState((prev) => {
-        return { quantity: calc };
-      });
-    }
+    const cloneIndex = this.state.productData.findIndex(
+      (obj) => obj.guid === product.guid
+    );
+    const clone = this.state.productData.slice();
+    clone[cloneIndex].quantity += 1;
+    this.setState({ productData: clone });
   };
 
   render() {

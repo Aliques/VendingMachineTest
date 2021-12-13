@@ -5,7 +5,7 @@ export class Basket extends Component {
   constructor(props) {
     super();
     this.state = {
-      cartItems: props.cartItems ?? [],
+      // cartItems: props.cartItems ?? [],
       totalCost: 0,
     };
   }
@@ -27,10 +27,10 @@ export class Basket extends Component {
       <div>
         <div className={classes['basket-container']}>
           <div className={classes.title}>Your choice</div>
-          {this.state.cartItems.length === 0 && (
+          {this.props.cartItems.length === 0 && (
             <div className={classes['empty-dialog']}>Select drinks</div>
           )}
-          {this.state.cartItems.map((item) => (
+          {this.props.cartItems.map((item) => (
             <div className={classes.itemContainer} key={item.guid}>
               <div className={classes['item-name']}>{item.title}</div>
               <div className={classes['item-buttons']}>
@@ -52,17 +52,17 @@ export class Basket extends Component {
               </div>
             </div>
           ))}
-          {this.state.cartItems.length !== 0 && (
-            <div className={classes.total}>
-              Total cost: {this.state.totalCost} ¥
-            </div>
-          )}
-          {this.state.cartItems.length !== 0 && (
-            <div className={classes['buy-btn']}>
-              Total cost: {this.state.totalCost} ¥
-            </div>
-          )}
         </div>
+        {this.props.cartItems.length !== 0 && (
+          <div className={classes.total}>
+            Total cost: {this.state.totalCost} ¥
+          </div>
+        )}
+        {this.props.cartItems.length !== 0 && (
+          <div className={classes['payment-btn-container']}>
+            <button>To pay</button>
+          </div>
+        )}
         <Coins
           deposit={this.state.deposit}
           depositChanged={this.depositChanged}

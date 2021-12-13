@@ -1,13 +1,14 @@
 .basket-container {
+  position: relative;
   padding: 0 15px;
   width: 550px;
-  height: 60vh;
+  height: 50vh;
   vertical-align: middle;
   margin: 60px 10px 40px 10px;
   box-sizing: border-box;
   border: 3px solid #497a81;
   border-radius: 8px;
-  overflow: hidden;
+  overflow-y: scroll;
 }
 
 .title {
@@ -20,7 +21,7 @@
   justify-content: center;
   display: flex;
   align-items: center;
-  height: 90%;
+  height: 70%;
   width: 100%;
   font-weight: 700;
 }
@@ -69,8 +70,25 @@
 }
 
 .total {
-  margin-top: 20px;
+  margin: 20px 20px;
   text-align: end;
   font-weight: 700;
   font-size: 20px;
+}
+
+.payment-btn-container {
+  vertical-align: bottom;
+  text-align: center;
+}
+.payment-btn-container button {
+  width: 200px;
+  height: 40px;
+  border-radius: 5px;
+  border: 3px;
+  background-color: #76a780;
+}
+::-webkit-scrollbar {
+  /* chrome based */
+  width: 0px; /* ширина scrollbar'a */
+  background: transparent; /* опционально */
 }
