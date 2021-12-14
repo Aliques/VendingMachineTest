@@ -7,9 +7,24 @@ export class ProductCard extends Component {
     this.state = {
       data: props.data,
       quantity: props.data.quantity,
+      isFetching: false,
     };
   }
-
+  onDelete = () => {
+    this.setState({ productData: null, isFetching: true });
+    console.log(this.state.data);
+    fetch(`https://localhost:44373/api/Product/${this.state.data.guid}`, {
+      method: 'DELETE',
+    })
+      .then((o) => {
+        this.props.getProducts();
+        this.setState({ isFetching: false });
+      })
+      .catch((e) => {
+        this.setState({ productData: null, isFetching: false, error: e });
+      });
+    this.setState({ isFetching: false });
+  };
   render() {
     const { data, isFetching, error } = this.state;
     if (isFetching) {
@@ -19,20 +34,15 @@ export class ProductCard extends Component {
     if (error) return <div>{`Error: ${error.message}`}</div>;
 
     return (
-      <div className={classes.container}>
+      <div className={classes.container} onClick={() => this.props.onAdd(data)}>
+        <div onClick={this.onDelete} className={classes.reset}>
+          X
+        </div>
         <img className={classes.size} src={data.imageSrc} alt="..." />
         <div className={classes.description}>
           <div className={classes.title}>{data.title}</div>
           <div>Total count: {data.quantity}</div>
           <div>Cost: {data.cost}</div>
-        </div>
-        <div>
-          <button
-            onClick={() => this.props.onAdd(data)}
-            className={classes['select-btn']}
-          >
-            Select
-          </button>
         </div>
       </div>
     );

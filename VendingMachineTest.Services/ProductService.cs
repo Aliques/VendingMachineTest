@@ -33,18 +33,18 @@ namespace VendingMachineTest.Services
         {
             var productEntity = _mapper.Map<Product>(productForCreationDto);
 
-            string imageName = new string(Path.GetFileNameWithoutExtension(productEntity.ImageFile.FileName)
+            string imageName = new string(Path.GetFileNameWithoutExtension(productForCreationDto.ImageFile.FileName)
                 .Take(10)
                 .ToArray())
                 .Replace(' ', '-');
 
-            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(productEntity.ImageFile.FileName);
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(productForCreationDto.ImageFile.FileName);
             var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
             productEntity.ImageName = imageName;
 
             using (var fileStream = new FileStream(imagePath, FileMode.Create))
             {
-                await productEntity.ImageFile.CopyToAsync(fileStream);
+                await productForCreationDto.ImageFile.CopyToAsync(fileStream);
             }
 
             var createdProduct = _productRepository.Create(productEntity);
@@ -53,9 +53,19 @@ namespace VendingMachineTest.Services
             return _mapper.Map<ProductDto>(createdProduct);
         }
 
-        public Task<EntityState> DeleteAsync(Guid productId)
+        public async Task<EntityState> DeleteAsync(Guid productId)
         {
-            throw new NotImplementedException();
+            var product = await _productRepository.GetById(productId);
+
+            if(product==null)
+            {
+                return EntityState.Unchanged;
+            }
+
+            _productRepository.Delete(product);
+            await _unitOfWork.SaveChangesAsync();
+
+            return EntityState.Modified;
         }
 
         public async Task<IQueryable<ProductDto>> GetProductsAsync(HttpRequest httpRequest)
@@ -65,6 +75,24 @@ namespace VendingMachineTest.Services
             var products = await _productRepository.GetProducts(httpRequest);
 
             return products.ProjectTo<ProductDto>(configuration);
+        }
+
+        public async Task<int> UpdateProduct(ProductDto product)
+        {
+            var updatedProduct = await _productRepository.GetById(product.Guid);
+
+            if (product.ImageFile != null)
+            {
+                DeleteImage(product.ImageName);
+                updatedProduct.ImageName = await SaveImage(product.ImageFile);
+            }
+
+            updatedProduct.Quantity = product.Quantity;
+            updatedProduct.Title = product.Title;
+            updatedProduct.ChangingDate = DateTimeOffset.Now;
+            updatedProduct.Cost = product.Cost;
+
+            return await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<int> UpdateProducts(List<ProductDto> products)
@@ -77,6 +105,28 @@ namespace VendingMachineTest.Services
                 updatedProduct.Title = product.Title;
             }
             return await _unitOfWork.SaveChangesAsync();
+        }
+
+        public void DeleteImage(string imageName)
+        {
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+            if (File.Exists(imagePath))
+                File.Delete(imagePath);
+        }
+        public async Task<string> SaveImage(IFormFile imageFile)
+        {
+            string imageName = new String(Path.GetFileNameWithoutExtension(imageFile.FileName)
+                .Take(10)
+                .ToArray())
+                .Replace(' ', '-');
+
+            imageName = imageName + DateTime.Now.ToString("yymmssfff") + Path.GetExtension(imageFile.FileName);
+            var imagePath = Path.Combine(_hostEnvironment.ContentRootPath, "Images", imageName);
+            using (var fileStream = new FileStream(imagePath, FileMode.Create))
+            {
+                await imageFile.CopyToAsync(fileStream);
+            }
+            return imageName;
         }
     }
 }

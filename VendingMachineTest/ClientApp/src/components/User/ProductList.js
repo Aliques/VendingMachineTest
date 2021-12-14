@@ -7,18 +7,20 @@ export class ProductList extends Component {
     super();
     this.state = {
       data: props.productData,
+      recordForEdit: null,
     };
   }
 
-  // componentDidMount() {
-  //   fetch('https://localhost:44373/Product')
-  //     .then((resp) => resp.json())
-  //     .then((result) => this.setState({ data: result, isFetching: false }))
-  //     .catch((e) => {
-  //       this.setState({ data: null, isFetching: false, error: e });
-  //     });
-  // }
+  getProducts = () => {
+    this.props.getProducts();
+  };
 
+  showRecordDetails = (data) => {
+    this.setState({ recordForEdit: data });
+  };
+  onAdd = (data) => {
+    this.props.onAdd(data);
+  };
   changeProductList = (cardItems) => {
     this.setState({ productData: this.props.productData });
   };
@@ -34,9 +36,11 @@ export class ProductList extends Component {
       <div className={classes.container}>
         {data.map((product) => (
           <ProductCard
+            getProducts={this.getProducts}
             key={product.title}
             data={product}
-            onAdd={this.props.onAdd}
+            onAdd={this.onAdd}
+            recordForEdit={this.state.recordForEdit}
           />
         ))}
       </div>

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,5 +11,7 @@ namespace VendingMachineTest.Domain.DTO
         public int TotalCount { get; set; }
 
         public bool IsBlocked { get; set; }
+
+        public IFormFile ImageFile { get; set; }
     }
 }

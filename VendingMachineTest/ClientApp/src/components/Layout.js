@@ -1,9 +1,9 @@
-import React, { Component } from "react";
-import Sidebar from "./Sidebar";
-import "./Layout.css";
-import { Redirect, Route } from "react-router-dom";
-import { UserPage } from "./User/UserPage";
-import { AdminPage } from "./Admin/AdminPage";
+import React, { Component } from 'react';
+import Sidebar from './Sidebar';
+import './Layout.css';
+import { Redirect, Route } from 'react-router-dom';
+import { UserPage } from './User/UserPage';
+import { AdminPage } from './Admin/AdminPage';
 export class Layout extends Component {
   static displayName = Layout.name;
 
@@ -17,7 +17,7 @@ export class Layout extends Component {
           </div>
         </div>
         <div className="content-container">
-          <Redirect exact from="/" to="user" />
+          <Redirect exact from="/" to="admin" />
           <Route path="/user">
             <UserPage />
           </Route>

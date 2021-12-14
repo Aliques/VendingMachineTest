@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 export class UserPage extends Component {
+  _isMounted = false;
   constructor(props) {
     super();
     toast.configure();
@@ -61,7 +62,7 @@ export class UserPage extends Component {
     }
   };
 
-  componentDidMount() {
+  getProducts = () => {
     fetch('https://localhost:44373/api/Product')
       .then((resp) => resp.json())
       .then((result) => {
@@ -74,15 +75,22 @@ export class UserPage extends Component {
       .catch((e) => {
         this.setState({ productData: null, isFetching: false, error: e });
       });
-  }
+  };
 
+  componentDidMount() {
+    this._isMounted = true;
+    this.getProducts();
+  }
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
   toPay = () => {
     const changedProducts = this.getModifiedProducts(
       this.state.productData,
       this.state.productDataImmutable
     );
 
-    fetch('https://localhost:44373/api/Product', {
+    fetch('https://localhost:44373/api/Product/quantity', {
       method: 'PUT',
       body: JSON.stringify(changedProducts),
       headers: {
@@ -124,11 +132,13 @@ export class UserPage extends Component {
         'Content-Type': 'application/json',
       },
     });
+
+    this.setState({ cartItems: [] });
+
     toast.success(`Your change is ${change} ¥`, {
       autoClose: 5000,
       position: 'top-right',
     });
-    console.log('zxc');
   };
 
   // вычитаем сдачу из внесенного депозита

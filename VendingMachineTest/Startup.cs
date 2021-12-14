@@ -30,6 +30,7 @@ namespace VendingMachineTest
             services.ConfigureServices();
             services.ConfigureRepositories();
             services.AddControllersWithViews();
+           
             services.AddAutoMapper(typeof(Startup));
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -43,7 +44,8 @@ namespace VendingMachineTest
         {
             app.UseCors(options => options.WithOrigins("http://localhost:3000")
             .AllowAnyMethod()
-            .AllowAnyHeader());
+            .AllowAnyHeader()
+            .AllowCredentials());
 
             if (env.IsDevelopment())
             {

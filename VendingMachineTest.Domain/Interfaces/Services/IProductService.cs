@@ -14,5 +14,6 @@ namespace VendingMachineTest.Domain.Interfaces.Services
         Task<EntityState> DeleteAsync(Guid productId);
         Task<IQueryable<ProductDto>> GetProductsAsync(HttpRequest httpRequest);
         Task<int> UpdateProducts(List<ProductDto> products);
+        Task<int> UpdateProduct(ProductDto product);
     }
 }

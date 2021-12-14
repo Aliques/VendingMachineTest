@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using System;
 
 namespace VendingMachineTest.Domain.DTO
 {
@@ -14,5 +15,6 @@ namespace VendingMachineTest.Domain.DTO
         public int Quantity { get; set; }
 
         public string ImageSrc { get; set; }
+        public IFormFile ImageFile { get; set; }
     }
 }
