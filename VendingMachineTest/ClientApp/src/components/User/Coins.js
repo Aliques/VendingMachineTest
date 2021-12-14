@@ -21,6 +21,7 @@ export class Coins extends Component {
       this.setState((state) => {
         deposit = state.deposit + value;
         this.props.depositChanged(deposit);
+        this.props.updateDepositCoins(value);
         return { deposit: deposit };
       });
     }
@@ -31,6 +32,7 @@ export class Coins extends Component {
     fetch('https://localhost:44373/api/Coins')
       .then((resp) => resp.json())
       .then((result) => {
+        this.props.updateCoinsData(result);
         this.setState({
           data: result,
           isFetching: false,

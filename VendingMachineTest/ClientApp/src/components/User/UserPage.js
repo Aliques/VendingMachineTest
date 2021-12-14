@@ -10,6 +10,9 @@ export class UserPage extends Component {
     super();
     toast.configure();
     this.state = {
+      depositCoinsData: { one: 0, two: 0, five: 0, ten: 0 },
+      coinsData: [],
+      productDataImmutable: [],
       productData: [],
       deposit: 0,
       cartItems: props.cartItems ?? [],
@@ -17,17 +20,168 @@ export class UserPage extends Component {
       error: null,
     };
   }
+  calculateTotalCost = () => {
+    let total = this.state.cartItems.reduce((a, c) => a + c.cost * c.qty, 0);
+    this.setState({
+      totalCost: total,
+    });
+  };
+  updateCoinsData = (value) => {
+    this.setState({ coinsData: value });
+  };
+
+  updateDepositCoins = (value, type = 'increment') => {
+    switch (value) {
+      case 1:
+        this.setState((prev) => {
+          prev.depositCoinsData.one += type === 'increment' ? 1 : -1;
+          return { depositCoinsData: prev.depositCoinsData };
+        });
+        break;
+      case 2:
+        this.setState((prev) => {
+          prev.depositCoinsData.two += type === 'increment' ? 1 : -1;
+          return { depositCoinsData: prev.depositCoinsData };
+        });
+        break;
+      case 5:
+        this.setState((prev) => {
+          prev.depositCoinsData.five += type === 'increment' ? 1 : -1;
+          return { depositCoinsData: prev.depositCoinsData };
+        });
+        break;
+      case 10:
+        this.setState((prev) => {
+          prev.depositCoinsData.ten += type === 'increment' ? 1 : -1;
+          return { depositCoinsData: prev.depositCoinsData };
+        });
+        break;
+      default:
+        break;
+    }
+  };
+
   componentDidMount() {
-    fetch('https://localhost:44373/Product')
+    fetch('https://localhost:44373/api/Product')
       .then((resp) => resp.json())
-      .then((result) =>
-        this.setState({ productData: result, isFetching: false })
-      )
+      .then((result) => {
+        this.setState({
+          productData: result,
+          productDataImmutable: JSON.parse(JSON.stringify(result)),
+          isFetching: false,
+        });
+      })
       .catch((e) => {
         this.setState({ productData: null, isFetching: false, error: e });
       });
-    console.log('123');
   }
+
+  toPay = () => {
+    const changedProducts = this.getModifiedProducts(
+      this.state.productData,
+      this.state.productDataImmutable
+    );
+
+    fetch('https://localhost:44373/api/Product', {
+      method: 'PUT',
+      body: JSON.stringify(changedProducts),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const totalCost = this.state.cartItems.reduce(
+      (a, c) => a + c.cost * c.qty,
+      0
+    );
+
+    const change = this.state.deposit - totalCost;
+    const coins = this.calcPaymentSum(change);
+
+    fetch('https://localhost:44373/api/Coins/deposit/', {
+      method: 'PUT',
+      body: JSON.stringify(
+        this.state.coinsData.map((x) => {
+          return {
+            Guid: x.guid,
+            Value: (function () {
+              switch (x.value) {
+                case 1:
+                  return coins.one;
+                case 2:
+                  return coins.two;
+                case 5:
+                  return coins.five;
+                case 10:
+                  return coins.ten;
+                default:
+                  return 0;
+              }
+            })(),
+          };
+        })
+      ),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    toast.success(`Your change is ${change} ¥`, {
+      autoClose: 5000,
+      position: 'top-right',
+    });
+    console.log('zxc');
+  };
+
+  // вычитаем сдачу из внесенного депозита
+  calcPaymentSum = (change) => {
+    const coins = Object.assign({}, this.state.depositCoinsData);
+    function countAll(count, val) {
+      for (let index = 0; index < count; index++) {
+        switch (val) {
+          case 10:
+            coins.ten -= 1;
+            break;
+          case 5:
+            coins.five -= 1;
+            break;
+          case 2:
+            coins.two -= 1;
+            break;
+          case 1:
+            coins.one -= 1;
+            break;
+          default:
+            break;
+        }
+      }
+    }
+    if (change / 10 >= 1) {
+      const dec = Math.trunc(change / 10);
+      change -= dec * 10;
+      countAll(dec, 10);
+    }
+    if (change / 5 >= 1) {
+      const fif = Math.trunc(change / 5);
+      change -= fif * 5;
+      countAll(fif, 5);
+    }
+    if (change / 2 >= 1) {
+      const tw = Math.trunc(change / 2);
+      change -= tw * 2;
+      countAll(tw, 2);
+    }
+    if (change > 0) {
+      countAll(change, 1);
+    }
+    return coins;
+  };
+
+  // получение продуктов с измененным количеством.
+  // mut - измененный массив, immut - эталонный массив
+  getModifiedProducts = (mut, immut) => {
+    return mut.filter((x) =>
+      immut.some((o) => o.quantity !== x.quantity && o.guid === x.guid)
+    );
+  };
 
   depositChanged = (value) => {
     this.setState({ deposit: value });
@@ -84,6 +238,7 @@ export class UserPage extends Component {
     const clone = this.state.productData.slice();
     clone[cloneIndex].quantity -= 1;
     this.setState({ productData: clone });
+    this.calculateTotalCost();
   };
 
   onRemove = (product) => {
@@ -107,6 +262,7 @@ export class UserPage extends Component {
     const clone = this.state.productData.slice();
     clone[cloneIndex].quantity += 1;
     this.setState({ productData: clone });
+    this.calculateTotalCost();
   };
 
   render() {
@@ -120,6 +276,10 @@ export class UserPage extends Component {
       <div className={classes.container}>
         <ProductList productData={this.state.productData} onAdd={this.onAdd} />
         <Basket
+          updateDepositCoins={this.updateDepositCoins}
+          updateCoinsData={this.updateCoinsData}
+          depositedCoinsChanged={this.depositedCoinsChanged}
+          toPay={this.toPay}
           depositChanged={this.depositChanged}
           onAdd={this.onAdd}
           onRemove={this.onRemove}

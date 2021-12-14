@@ -5,10 +5,15 @@ export class Basket extends Component {
   constructor(props) {
     super();
     this.state = {
-      // cartItems: props.cartItems ?? [],
       totalCost: 0,
     };
   }
+  updateCoinsData = (value) => {
+    this.props.updateCoinsData(value);
+  };
+  updateDepositCoins = (value) => {
+    this.props.updateDepositCoins(value);
+  };
   depositChanged = (value) => {
     this.props.depositChanged(value);
   };
@@ -21,7 +26,6 @@ export class Basket extends Component {
   componentWillReceiveProps(nextProps) {
     this.setState({ cartItems: nextProps.cartItems }, this.calculateTotalCost);
   }
-
   render() {
     return (
       <div>
@@ -60,10 +64,13 @@ export class Basket extends Component {
         )}
         {this.props.cartItems.length !== 0 && (
           <div className={classes['payment-btn-container']}>
-            <button>To pay</button>
+            <button onClick={() => this.props.toPay()}>To pay</button>
           </div>
         )}
         <Coins
+          updateDepositCoins={this.updateDepositCoins}
+          updateCoinsData={this.updateCoinsData}
+          coinData={this.props.coinData}
           deposit={this.state.deposit}
           depositChanged={this.depositChanged}
         />

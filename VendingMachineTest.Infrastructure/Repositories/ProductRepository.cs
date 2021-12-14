@@ -30,6 +30,11 @@ namespace VendingMachineTest.Infrastructure.Repositories
             return entityEntry.State;
         }
 
+        public async Task<Product> GetById(Guid guid)
+        {
+            return await _repositoryContext.FindAsync<Product>(guid);
+        }
+
         public async Task<IQueryable<Product>> GetProducts(HttpRequest httpRequest) //не очень нравится
         {
             var list = await _repositoryContext.Products

@@ -66,5 +66,17 @@ namespace VendingMachineTest.Services
 
             return products.ProjectTo<ProductDto>(configuration);
         }
+
+        public async Task<int> UpdateProducts(List<ProductDto> products)
+        {
+            foreach (var product in products)
+            {
+               var updatedProduct = await _productRepository.GetById(product.Guid);
+                updatedProduct.ImageName = product.ImageName;
+                updatedProduct.Quantity = product.Quantity;
+                updatedProduct.Title = product.Title;
+            }
+            return await _unitOfWork.SaveChangesAsync();
+        }
     }
 }

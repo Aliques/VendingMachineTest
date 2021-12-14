@@ -7,6 +7,7 @@ using VendingMachineTest.Domain.Interfaces.Repositories;
 using VendingMachineTest.Domain.Interfaces.Services;
 using AutoMapper.QueryableExtensions;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace VendingMachineTest.Services
 {
@@ -29,16 +30,32 @@ namespace VendingMachineTest.Services
             var coins = await _coinRepository.FindAllAsync();
             return coins.ProjectTo<CoinDto>(configuration);
         }
-
-        public async Task<Coin> UpdateCoin(Guid guid, CoinForUpdateDto coin)
+        public async Task<int> DepositedCoins(List<DepositedCoin> coins)
         {
-            var updatableCoin = await _coinRepository.GetById(guid);
-            updatableCoin.ChangingDate = DateTimeOffset.Now;
-            updatableCoin.IsBlocked = coin.IsBlocked;
-            updatableCoin.TotalCount = coin.TotalCount;
-            await _unitOfWork.SaveChangesAsync();
+            foreach (var coin in coins)
+            {
+                var updatableCoin = await _coinRepository.GetById(coin.Guid);
+                updatableCoin.ChangingDate = DateTimeOffset.Now;
+                updatableCoin.TotalCount = updatableCoin.TotalCount + coin.Value;
+            }
 
-            return updatableCoin;
+            var saved = await _unitOfWork.SaveChangesAsync();
+
+            return saved;
+        }
+        public async Task<int> UpdateCoin(List<CoinForUpdateDto> coins)
+        {
+            foreach (var coin in coins)
+            {
+                var updatableCoin = await _coinRepository.GetById(coin.Guid);
+                updatableCoin.ChangingDate = DateTimeOffset.Now;
+                updatableCoin.IsBlocked = coin.IsBlocked;
+                updatableCoin.TotalCount = coin.TotalCount;
+            }
+            
+            var saved = await _unitOfWork.SaveChangesAsync();
+
+            return saved;
         }
     }
 }

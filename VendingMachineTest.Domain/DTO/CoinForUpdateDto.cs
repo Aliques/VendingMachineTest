@@ -6,6 +6,7 @@ namespace VendingMachineTest.Domain.DTO
 {
     public class CoinForUpdateDto
     {
+        public Guid Guid { get; set; }
         public int TotalCount { get; set; }
 
         public bool IsBlocked { get; set; }

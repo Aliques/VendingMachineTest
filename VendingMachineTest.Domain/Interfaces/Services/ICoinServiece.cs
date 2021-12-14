@@ -9,8 +9,10 @@ namespace VendingMachineTest.Domain.Interfaces.Services
 {
     public interface ICoinServiece
     {
-        Task<Coin> UpdateCoin(Guid guid, CoinForUpdateDto coin);
+        Task<int> UpdateCoin(List<CoinForUpdateDto> coins);
 
         Task<IQueryable<CoinDto>> GetAll();
+
+        Task<int> DepositedCoins(List<DepositedCoin> coins);
     }
 }
