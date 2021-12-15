@@ -6,7 +6,7 @@ namespace VendingMachineTest.Domain.DTO
     public class ProductDto
     {
         public Guid Guid { get; set; }
-        public string Title { get; set; }
+        public string Name { get; set; }
 
         public string ImageName { get; set; }
 

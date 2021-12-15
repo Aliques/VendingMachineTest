@@ -4,45 +4,33 @@ import classes from './ProductCard.module.css';
 export class ProductCard extends Component {
   constructor(props) {
     super();
-    this.state = {
-      data: props.data,
-      quantity: props.data.quantity,
-      isFetching: false,
-    };
   }
-  onDelete = () => {
-    this.setState({ productData: null, isFetching: true });
-    console.log(this.state.data);
-    fetch(`https://localhost:44373/api/Product/${this.state.data.guid}`, {
-      method: 'DELETE',
-    })
-      .then((o) => {
-        this.props.getProducts();
-        this.setState({ isFetching: false });
-      })
-      .catch((e) => {
-        this.setState({ productData: null, isFetching: false, error: e });
-      });
-    this.setState({ isFetching: false });
-  };
+
   render() {
-    const { data, isFetching, error } = this.state;
-    if (isFetching) {
+    if (this.props.isFetching) {
       return <div>...Loading</div>;
     }
 
-    if (error) return <div>{`Error: ${error.message}`}</div>;
-
     return (
-      <div className={classes.container} onClick={() => this.props.onAdd(data)}>
-        <div onClick={this.onDelete} className={classes.reset}>
+      <div
+        className={classes.container}
+        onClick={() => this.props.onAdd(this.props.data)}
+      >
+        <div
+          onClick={() => this.props.onDelete(this.props.data.guid)}
+          className={classes.reset}
+        >
           X
         </div>
-        <img className={classes.size} src={data.imageSrc} alt="..." />
+        <img
+          className={classes.size}
+          src={this.props.data.imageSrc}
+          alt="..."
+        />
         <div className={classes.description}>
-          <div className={classes.title}>{data.title}</div>
-          <div>Total count: {data.quantity}</div>
-          <div>Cost: {data.cost}</div>
+          <div className={classes.title}>{this.props.data.title}</div>
+          <div>Total count: {this.props.data.quantity}</div>
+          <div>Cost: {this.props.data.cost}</div>
         </div>
       </div>
     );

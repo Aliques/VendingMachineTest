@@ -5,19 +5,15 @@ import classes from './ProductList.module.css';
 export class ProductList extends Component {
   constructor(props) {
     super();
-    this.state = {
-      data: props.productData,
-      recordForEdit: null,
-    };
   }
 
+  onDelete = (guid) => {
+    this.props.onDelete(guid);
+  };
   getProducts = () => {
     this.props.getProducts();
   };
 
-  showRecordDetails = (data) => {
-    this.setState({ recordForEdit: data });
-  };
   onAdd = (data) => {
     this.props.onAdd(data);
   };
@@ -26,21 +22,20 @@ export class ProductList extends Component {
   };
 
   render() {
-    const { data, isFetching, error } = this.state;
-    if (isFetching) {
+    if (this.props.isFetching) {
       return <div>...Loading</div>;
     }
 
-    if (error) return <div>{`Error: ${error.message}`}</div>;
     return (
       <div className={classes.container}>
-        {data.map((product) => (
+        {this.props.productData.map((product) => (
           <ProductCard
+            isFetching={this.props.isFetching}
+            onDelete={this.onDelete}
             getProducts={this.getProducts}
-            key={product.title}
+            key={product.guid}
             data={product}
             onAdd={this.onAdd}
-            recordForEdit={this.state.recordForEdit}
           />
         ))}
       </div>

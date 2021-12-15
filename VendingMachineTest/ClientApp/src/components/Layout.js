@@ -3,7 +3,7 @@ import Sidebar from './Sidebar';
 import './Layout.css';
 import { Redirect, Route } from 'react-router-dom';
 import { UserPage } from './User/UserPage';
-import { AdminPage } from './Admin/AdminPage';
+import AdminPanel2 from './Admin/AdminPanel2';
 export class Layout extends Component {
   static displayName = Layout.name;
 
@@ -22,7 +22,7 @@ export class Layout extends Component {
             <UserPage />
           </Route>
           <Route path="/admin">
-            <AdminPage />
+            <AdminPanel2 />
           </Route>
         </div>
       </div>

@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const initialFieldValues = {
-  id: '0',
+  guid: '0',
   name: '',
   defaultImg: defaultImg,
   imageSrc: defaultImg,
@@ -23,17 +23,32 @@ export class AdminPage extends Component {
     toast.configure();
     this.state = {
       productData: [],
-      deposit: 0,
       isFetching: true,
       error: null,
       errors: {},
-      values: initialFieldValues,
+      values: { ...initialFieldValues },
     };
-    this.name = React.createRef();
+    this.name = React.createRef('');
     this.cost = React.createRef(0);
     this.quantity = React.createRef(0);
     this.img = React.createRef(0);
   }
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    return this.props.productData !== prevProps.productData;
+  }
+  onDelete = (guid) => {
+    this.setState({ isFetching: true });
+    fetch(`https://localhost:44373/api/Product/${guid}`, {
+      method: 'DELETE',
+    })
+      .then((o) => {
+        this.setState({ isFetching: false }, () => this.getProducts());
+      })
+      .catch((e) => {
+        this.setState({ isFetching: false, error: e });
+      });
+    this.setState({ isFetching: false }, () => this.getProducts());
+  };
 
   getProducts = () => {
     fetch('https://localhost:44373/api/Product')
@@ -41,13 +56,13 @@ export class AdminPage extends Component {
       .then((result) => {
         this.setState({
           productData: result,
-          productDataImmutable: JSON.parse(JSON.stringify(result)),
           isFetching: false,
         });
       })
       .catch((e) => {
         this.setState({ productData: null, isFetching: false, error: e });
       });
+    this.resetForm();
   };
   componentDidMount() {
     this.setState({ values: initialFieldValues });
@@ -58,7 +73,7 @@ export class AdminPage extends Component {
     console.log(data);
     this.setState((prev) => {
       let val = prev;
-      val.id = data.guid;
+      val.guid = data.guid;
       val.name = data.title;
       val.imageSrc = data.imageSrc;
       val.quantity = data.quantity;
@@ -70,8 +85,8 @@ export class AdminPage extends Component {
   };
 
   addOrEdit = (formData, onSuccess) => {
-    if (formData.get('guid') === '0' || formData.get('guid') === undefined) {
-      console.log(formData);
+    this.setState({ isFetching: true });
+    if (formData.get('guid') === '0') {
       fetch('https://localhost:44373/api/Product/', {
         method: 'POST',
         body: formData,
@@ -82,26 +97,25 @@ export class AdminPage extends Component {
         body: formData,
       });
     }
-    this.getProducts();
+    this.setState({ isFetching: false }, () => this.getProducts());
   };
 
   handleFormSubmit = (e) => {
     e.preventDefault();
-    let blob = fetch(this.state.values.imageSrc, { mode: 'no-cors' }).then(
-      (r) => r.blob()
+    fetch(this.state.values.imageSrc, { mode: 'no-cors' }).then((r) =>
+      r.blob()
     );
-    console.log(blob);
     if (this.validate()) {
-      console.log(this.state.values.id);
+      console.log(this.state.values.guid);
       const formData = new FormData();
-      formData.append('guid', this.state.values.id);
-      formData.append('title', this.state.values.name);
-      formData.append('quantity', this.state.values.quantity);
-      formData.append('cost', this.state.values.cost);
+      formData.append('guid', this.state.values.guid);
+      formData.append('title', this.name.current.value);
+      formData.append('quantity', this.quantity.current.value);
+      formData.append('cost', this.cost.current.value);
       formData.append('imageSrc', this.state.values.imageSrc);
       formData.append('imageName', this.state.values.imageName);
       formData.append('imageFile', this.state.values.imageFile);
-      this.addOrEdit(formData, this.resetForm);
+      this.addOrEdit(formData);
     } else {
       toast.error(`Validation error! `, {
         autoClose: 5000,
@@ -116,7 +130,7 @@ export class AdminPage extends Component {
       reader.onload = (x) => {
         this.setState((prev) => {
           let val = prev;
-          val.id = '0';
+          val.guid = '0';
           val.imageSrc = x.target.result;
           val.imageFile = imageFile;
           return { values: val };
@@ -134,9 +148,13 @@ export class AdminPage extends Component {
 
   handleInputChange = (e) => {
     this.setState((prev) => {
-      prev.values.name = this.name.current.value;
-      prev.values.quantity = this.quantity.current.value;
-      prev.values.cost = this.cost.current.value;
+      let val = prev;
+      if (val.values.guid.length < 5) {
+        val.values.guid = '0';
+      }
+      val.values.name = this.name.current.value;
+      val.values.quantity = this.quantity.current.value;
+      val.values.cost = this.cost.current.value;
       return { values: prev.values };
     });
   };
@@ -149,10 +167,12 @@ export class AdminPage extends Component {
   };
 
   resetForm = () => {
-    this.setState({ values: initialFieldValues });
+    this.setState((prev) => {
+      return { values: initialFieldValues };
+    });
     // this.name.current.value = '';
-    // this.cost.current.value = '';
-    // this.quantity.current.value = '';
+    // this.cost.current.value = 0;
+    // this.quantity.current.value = 0;
     // this.img.current.value = null;
   };
 
@@ -233,6 +253,8 @@ export class AdminPage extends Component {
         </div>
         <div className={classes['product-list-container']}>
           <ProductList
+            isFetching={this.state.isFetching}
+            onDelete={this.onDelete}
             productData={this.state.productData}
             onAdd={this.onAdd}
           />

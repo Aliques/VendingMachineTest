@@ -61,7 +61,6 @@ namespace VendingMachineTest.Services
             {
                 return EntityState.Unchanged;
             }
-
             _productRepository.Delete(product);
             await _unitOfWork.SaveChangesAsync();
 
@@ -88,7 +87,7 @@ namespace VendingMachineTest.Services
             }
 
             updatedProduct.Quantity = product.Quantity;
-            updatedProduct.Title = product.Title;
+            updatedProduct.Name = product.Name;
             updatedProduct.ChangingDate = DateTimeOffset.Now;
             updatedProduct.Cost = product.Cost;
 
@@ -102,7 +101,7 @@ namespace VendingMachineTest.Services
                var updatedProduct = await _productRepository.GetById(product.Guid);
                 updatedProduct.ImageName = product.ImageName;
                 updatedProduct.Quantity = product.Quantity;
-                updatedProduct.Title = product.Title;
+                updatedProduct.Name = product.Name;
             }
             return await _unitOfWork.SaveChangesAsync();
         }

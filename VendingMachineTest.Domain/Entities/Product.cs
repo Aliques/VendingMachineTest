@@ -6,7 +6,7 @@ namespace VendingMachineTest.Domain.Entities
     public class Product : BaseEntity
     {
         [Column("title")]
-        public string Title { get; set; }
+        public string Name { get; set; }
 
         [Column("image_name")]
         public string ImageName { get; set; }
