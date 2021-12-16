@@ -1,4 +1,4 @@
-.container {
+/* .container {
   position: relative;
   display: flex;
   justify-content: space-between;
@@ -9,7 +9,7 @@
   width: 15rem;
   height: 18em;
   border: 3px solid #497a81;
-}
+} */
 
 .size {
   height: 65%;
@@ -41,21 +41,55 @@
 .reset {
   z-index: 1;
   position: absolute;
-  top: 5px;
-  left: 85%;
+  top: -35px;
+  left: 100%;
   font-size: 25px;
   font-weight: 800;
 }
 .editor-container {
   position: relative;
   margin: 20px 50px;
-  width: 30%;
+  max-width: 400px;
   height: 60%;
 }
 .card-img-top {
   width: 100%;
   height: 100%;
-  max-height: 200px;
+  height: 200px;
   display: block;
   object-fit: contain;
+}
+.form-froup {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.common-control-styles {
+  background: transparent;
+  border: 1px solid #497a81;
+  border-radius: 7px;
+}
+
+.submit {
+  width: 100%;
+  height: 40px;
+  text-align: center;
+  margin-top: 25px;
+}
+.submit-container {
+  text-align: end;
+}
+.controls-wrapper {
+  margin: 10px;
+}
+
+@media (max-width: 900px) {
+  .editor-container {
+    position: relative;
+    margin: 20px 50px;
+    max-width: 400px;
+    height: 60%;
+  }
 }

@@ -47,7 +47,7 @@ namespace VendingMachineTest.Services
         {
             foreach (var coin in coins)
             {
-                var updatableCoin = await _coinRepository.GetById(coin.Guid);
+                var updatableCoin = await _coinRepository.GetByValue(coin.Value);
                 updatableCoin.ChangingDate = DateTimeOffset.Now;
                 updatableCoin.IsBlocked = coin.IsBlocked;
                 updatableCoin.TotalCount = coin.TotalCount;

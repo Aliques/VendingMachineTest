@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import defaultImg from '../../images/screen-1.jpg';
+import './Product.css';
+import defaultImageSrc from '../../images/screen-1.jpg';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const initialFieldValues = {
   guid: '0',
@@ -7,19 +10,24 @@ const initialFieldValues = {
   quantity: 0,
   cost: 0,
   imageName: '',
-  imageFile: {},
-  imageSrc: defaultImg,
+  imageSrc: defaultImageSrc,
+  imageFile: null,
 };
-
-export default function Form(props) {
+export default function Product(props) {
+  toast.configure();
   const { addOrEdit, recordForEdit } = props;
 
   const [values, setValues] = useState(initialFieldValues);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    if (recordForEdit != null) setValues(recordForEdit);
-  }, [recordForEdit]);
+    if (props.resetForm) {
+      resetForm();
+    }
+    if (recordForEdit != null) {
+      setValues(recordForEdit);
+    }
+  }, [recordForEdit, props.resetForm]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -45,7 +53,7 @@ export default function Form(props) {
       setValues({
         ...values,
         imageFile: null,
-        imageSrc: defaultImg,
+        imageSrc: defaultImageSrc,
       });
     }
   };
@@ -53,7 +61,7 @@ export default function Form(props) {
   const validate = () => {
     let temp = {};
     temp.name = values.name === '' ? false : true;
-    temp.imageSrc = values.imageSrc === defaultImg ? false : true;
+    temp.imageSrc = values.imageSrc === defaultImageSrc ? false : true;
     setErrors(temp);
     return Object.values(temp).every((x) => x === true);
   };
@@ -61,7 +69,6 @@ export default function Form(props) {
   const resetForm = () => {
     setValues(initialFieldValues);
     document.getElementById('image-uploader').value = null;
-    setErrors({});
   };
 
   const handleFormSubmit = (e) => {
@@ -69,72 +76,81 @@ export default function Form(props) {
     if (validate()) {
       const formData = new FormData();
       formData.append('guid', values.guid);
-      formData.append('cost', values.cost);
+      formData.append('name', values.name);
       formData.append('quantity', values.quantity);
+      formData.append('cost', values.cost);
       formData.append('imageName', values.imageName);
       formData.append('imageFile', values.imageFile);
       addOrEdit(formData, resetForm);
+    } else {
+      toast.warning('Check the name and image!', {
+        autoClose: 3000,
+        position: 'top-right',
+      });
     }
   };
 
-  const applyErrorClass = (field) =>
-    field in errors && errors[field] === false ? ' invalid-field' : '';
-
   return (
-    <>
-      <div className="container text-center">
-        <p className="lead">An Employee</p>
+    <div className="editor-container">
+      <div onClick={resetForm} className="reset">
+        X
       </div>
       <form autoComplete="off" noValidate onSubmit={handleFormSubmit}>
         <div className="card">
           <img src={values.imageSrc} className="card-img-top" alt="..." />
-          <div className="card-body">
-            <div className="form-group">
+          <div className="controls-wrapper">
+            <div>
               <input
                 type="file"
                 accept="image/*"
-                className={'form-control-file' + applyErrorClass('imageSrc')}
                 onChange={showPreview}
                 id="image-uploader"
               />
             </div>
-            <div className="form-group">
+            <div className="form-froup">
+              <label for="name">Name:</label>
               <input
-                className={'form-control' + applyErrorClass('employeeName')}
-                placeholder="Employee Name"
-                name="employeeName"
-                value={values.employeeName}
+                className="common-control-styles"
+                placeholder="Name"
+                name="name"
+                value={values.name}
                 onChange={handleInputChange}
               />
             </div>
-            <div className="form-group">
+            <div className="form-froup">
+              <label for="cost">Cost:</label>
               <input
+                required
+                min={0}
+                className="common-control-styles"
                 type="number"
-                className="form-control"
-                placeholder="quantity"
-                name="quantity"
-                value={values.quantity}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="form-group">
-              <input
-                type="number"
-                className="form-control"
-                placeholder="cost"
+                placeholder="Cost"
                 name="cost"
                 value={values.cost}
                 onChange={handleInputChange}
               />
             </div>
-            <div className="form-group text-center">
-              <button type="submit" className="btn btn-light">
+            <div className="form-froup">
+              <label for="quantity">Quantity:</label>
+              <input
+                min={0}
+                className="common-control-styles"
+                id="quantity"
+                type="number"
+                placeholder="Quantity"
+                name="quantity"
+                value={values.quantity}
+                onChange={handleInputChange}
+              />
+            </div>
+            <div className="submit-container">
+              <button type="submit" className="submit common-control-styles">
                 Submit
               </button>
             </div>
           </div>
         </div>
       </form>
-    </>
+    </div>
   );
 }

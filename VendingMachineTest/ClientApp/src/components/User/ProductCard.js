@@ -16,12 +16,6 @@ export class ProductCard extends Component {
         className={classes.container}
         onClick={() => this.props.onAdd(this.props.data)}
       >
-        <div
-          onClick={() => this.props.onDelete(this.props.data.guid)}
-          className={classes.reset}
-        >
-          X
-        </div>
         <img
           className={classes.size}
           src={this.props.data.imageSrc}

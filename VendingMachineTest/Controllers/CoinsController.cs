@@ -19,13 +19,13 @@ namespace VendingMachineTest.Controllers
             _coinServiece = coinServiece;
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> UpdateCoins([FromBody] List<CoinForUpdateDto> coinForUpdateDto)
-        //{
-        //    var coin = await _coinServiece.UpdateCoin(coinForUpdateDto);
+        [HttpPut]
+        public async Task<IActionResult> UpdateCoins([FromBody] List<CoinForUpdateDto> coinForUpdateDto)
+        {
+            var coin = await _coinServiece.UpdateCoin(coinForUpdateDto);
 
-        //    return Ok(coin);
-        //}
+            return Ok(coin);
+        }
 
         [HttpPut("deposit/")]
         public async Task<IActionResult> DepositCoins([FromBody] List<DepositedCoin> coins)

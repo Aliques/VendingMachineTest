@@ -1,24 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import Employee from './Employee';
-import classes from '../Admin/AdminPage2.module.css';
+import '../Admin/AdminPage.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Product from './Product';
+import CoinsManager from './CoinsManager';
 
-export default function AdminPanel2() {
+export default function AdminPanel() {
   toast.configure();
   const [resetForm, doResetForm] = useState(false);
-  const [employeeList, setEmployeeList] = useState([]);
+  const [productList, setProductList] = useState([]);
   const [recordForEdit, setRecordForEdit] = useState(null);
   useEffect(() => {
-    refreshEmployeeList();
+    refreshProductList();
   }, []);
 
-  function refreshEmployeeList() {
+  function refreshProductList() {
     fetch('https://localhost:44373/api/Product')
       .then((resp) => resp.json())
       .then((result) => {
         console.log(result);
-        setEmployeeList(result);
+        setProductList(result);
       })
       .catch((err) => console.log(err));
   }
@@ -30,7 +31,7 @@ export default function AdminPanel2() {
         body: formData,
       })
         .then((res) => {
-          refreshEmployeeList();
+          refreshProductList();
           doResetForm(true);
           toast.success(`Item is created! `, {
             autoClose: 3000,
@@ -44,7 +45,7 @@ export default function AdminPanel2() {
         body: formData,
       })
         .then((res) => {
-          refreshEmployeeList();
+          refreshProductList();
           doResetForm(true);
           toast.success(`Item is updated! `, {
             autoClose: 3000,
@@ -64,9 +65,9 @@ export default function AdminPanel2() {
         method: 'DELETE',
       })
         .then((res) => {
-          refreshEmployeeList();
+          refreshProductList();
           doResetForm(true);
-          toast.success(`Item is deleted! `, {
+          toast.success(`Saved! `, {
             autoClose: 3000,
             position: 'top-right',
           });
@@ -75,17 +76,20 @@ export default function AdminPanel2() {
   };
 
   return (
-    <div className={classes.container}>
-      <Employee
-        addOrEdit={addOrEdit}
-        resetForm={resetForm}
-        recordForEdit={recordForEdit}
-      />
-      <div className={classes['list-container']}>
-        {employeeList.map((product) => (
+    <div className="container">
+      <div className="options">
+        <Product
+          addOrEdit={addOrEdit}
+          resetForm={resetForm}
+          recordForEdit={recordForEdit}
+        />
+        <CoinsManager />
+      </div>
+      <div className="list-container">
+        {productList.map((product) => (
           <div
             key={product.guid}
-            className={classes['card-container']}
+            className="card-container"
             onClick={(e) => {
               e.stopPropagation();
               showRecordDetails(product);
@@ -96,13 +100,13 @@ export default function AdminPanel2() {
                 e.stopPropagation();
                 onDelete(product.guid);
               }}
-              className={classes.reset}
+              className="reset"
             >
               X
             </div>
-            <img className={classes.size} src={product.imageSrc} alt="..." />
-            <div className={classes.description}>
-              <div className={classes.title}>{product.name}</div>
+            <img className="size" src={product.imageSrc} alt="..." />
+            <div className="description">
+              <div className="title">{product.name}</div>
               <div>Total count: {product.quantity}</div>
               <div>Cost: {product.cost}</div>
             </div>

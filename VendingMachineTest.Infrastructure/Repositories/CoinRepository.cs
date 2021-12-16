@@ -26,5 +26,10 @@ namespace VendingMachineTest.Infrastructure.Repositories
         {
             return await _repositoryContext.Coins.FindAsync(guid);
         }
+
+        public async Task<Coin> GetByValue(int value)
+        {
+            return await _repositoryContext.Coins.FirstOrDefaultAsync(c => c.Value == value);
+        }
     }
 }

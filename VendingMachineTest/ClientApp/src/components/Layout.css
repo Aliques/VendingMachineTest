@@ -24,4 +24,8 @@
 
 .content-container {
   padding: 60px 0px 0px 130px;
+  height: inherit;
+}
+.main-container {
+  height: 100%;
 }

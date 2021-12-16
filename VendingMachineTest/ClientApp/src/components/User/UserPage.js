@@ -132,7 +132,7 @@ export class UserPage extends Component {
         'Content-Type': 'application/json',
       },
     });
-
+    this.depositChanged(0);
     this.setState({ cartItems: [] });
 
     toast.success(`Your change is ${change} ¥`, {
