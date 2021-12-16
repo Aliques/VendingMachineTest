@@ -4,7 +4,7 @@ export class Coins extends Component {
   constructor(props) {
     super();
     this.state = {
-      deposit: 0,
+      deposit: props.deposit,
       error: null,
       data: null,
       isFetching: false,
@@ -56,7 +56,7 @@ export class Coins extends Component {
 
     return (
       <div>
-        <div className={classes.deposit}>Deposit: {this.state.deposit} ¥</div>
+        <div className={classes.deposit}>Deposit: {this.props.deposit} ¥</div>
         <div className={classes['coin-container']}>
           <div
             onClick={() => this.depositMoney(1, this.state.oneIsBlocked)}

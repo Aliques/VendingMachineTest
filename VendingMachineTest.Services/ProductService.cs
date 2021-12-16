@@ -61,6 +61,7 @@ namespace VendingMachineTest.Services
             {
                 return EntityState.Unchanged;
             }
+            DeleteImage(product.ImageName);
             _productRepository.Delete(product);
             await _unitOfWork.SaveChangesAsync();
 

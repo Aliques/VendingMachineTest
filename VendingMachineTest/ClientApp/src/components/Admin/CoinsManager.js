@@ -79,7 +79,7 @@ export default function CoinsManager(props) {
       },
     }).then((o) => {
       getCoinStates();
-      toast.success(`Item is deleted! `, {
+      toast.success(`Item is saved! `, {
         autoClose: 3000,
         position: 'top-right',
       });

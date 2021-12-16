@@ -84,19 +84,20 @@ export class UserPage extends Component {
   componentWillUnmount() {
     this._isMounted = false;
   }
-  toPay = () => {
+  toPay = async () => {
     const changedProducts = this.getModifiedProducts(
       this.state.productData,
       this.state.productDataImmutable
     );
 
-    fetch('https://localhost:44373/api/Product/quantity', {
+    let resp = await fetch('https://localhost:44373/api/Product/quantity', {
       method: 'PUT',
       body: JSON.stringify(changedProducts),
       headers: {
         'Content-Type': 'application/json',
       },
     });
+
     const totalCost = this.state.cartItems.reduce(
       (a, c) => a + c.cost * c.qty,
       0
@@ -133,12 +134,13 @@ export class UserPage extends Component {
       },
     });
     this.depositChanged(0);
-    this.setState({ cartItems: [] });
+    this.setState({ cartItems: [], deposit: 0 });
 
     toast.success(`Your change is ${change} ¥`, {
       autoClose: 5000,
       position: 'top-right',
     });
+    return resp.status;
   };
 
   // вычитаем сдачу из внесенного депозита
@@ -292,6 +294,7 @@ export class UserPage extends Component {
           toPay={this.toPay}
           depositChanged={this.depositChanged}
           onAdd={this.onAdd}
+          deposit={this.state.deposit}
           onRemove={this.onRemove}
           cartItems={cartItems}
         />

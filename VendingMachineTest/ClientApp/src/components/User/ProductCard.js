@@ -23,7 +23,7 @@ export class ProductCard extends Component {
         />
         <div className={classes.description}>
           <div className={classes.title}>{this.props.data.title}</div>
-          <div>Total count: {this.props.data.quantity}</div>
+          <div>Quantity: {this.props.data.quantity}</div>
           <div>Cost: {this.props.data.cost}</div>
         </div>
       </div>

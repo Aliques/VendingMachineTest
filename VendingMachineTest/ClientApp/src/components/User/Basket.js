@@ -6,6 +6,7 @@ export class Basket extends Component {
     super();
     this.state = {
       totalCost: 0,
+      paymentStatus: 0,
     };
   }
   updateCoinsData = (value) => {
@@ -64,14 +65,21 @@ export class Basket extends Component {
         )}
         {this.props.cartItems.length !== 0 && (
           <div className={classes['payment-btn-container']}>
-            <button onClick={() => this.props.toPay()}>To pay</button>
+            <button
+              onClick={() => {
+                let status = this.props.toPay();
+                // status.then((o) => );
+              }}
+            >
+              To pay
+            </button>
           </div>
         )}
         <Coins
           updateDepositCoins={this.updateDepositCoins}
           updateCoinsData={this.updateCoinsData}
           coinData={this.props.coinData}
-          deposit={this.state.deposit}
+          deposit={this.props.deposit}
           depositChanged={this.depositChanged}
         />
       </div>

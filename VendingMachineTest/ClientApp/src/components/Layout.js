@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import Sidebar from './Sidebar';
 import './Layout.css';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, withRouter } from 'react-router-dom';
 import { UserPage } from './User/UserPage';
 import AdminPanel from './Admin/AdminPanel';
 export class Layout extends Component {
   static displayName = Layout.name;
 
   render() {
+    const { history } = this.props;
     return (
       <div className="main-container">
         <Sidebar />

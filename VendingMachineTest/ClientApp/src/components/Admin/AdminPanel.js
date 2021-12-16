@@ -67,7 +67,7 @@ export default function AdminPanel() {
         .then((res) => {
           refreshProductList();
           doResetForm(true);
-          toast.success(`Saved! `, {
+          toast.success(`Deleted! `, {
             autoClose: 3000,
             position: 'top-right',
           });
@@ -107,7 +107,7 @@ export default function AdminPanel() {
             <img className="size" src={product.imageSrc} alt="..." />
             <div className="description">
               <div className="title">{product.name}</div>
-              <div>Total count: {product.quantity}</div>
+              <div>Total Quantity: {product.quantity}</div>
               <div>Cost: {product.cost}</div>
             </div>
           </div>
