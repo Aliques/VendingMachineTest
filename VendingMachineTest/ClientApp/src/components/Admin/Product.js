@@ -18,7 +18,6 @@ export default function Product(props) {
   const { addOrEdit, recordForEdit } = props;
 
   const [values, setValues] = useState(initialFieldValues);
-  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     if (props.resetForm) {
@@ -62,7 +61,6 @@ export default function Product(props) {
     let temp = {};
     temp.name = values.name === '' ? false : true;
     temp.imageSrc = values.imageSrc === defaultImageSrc ? false : true;
-    setErrors(temp);
     return Object.values(temp).every((x) => x === true);
   };
 

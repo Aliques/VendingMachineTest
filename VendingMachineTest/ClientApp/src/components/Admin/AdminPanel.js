@@ -14,8 +14,8 @@ export default function AdminPanel() {
     refreshProductList();
   }, []);
 
-  function refreshProductList() {
-    fetch('https://localhost:44373/api/Product')
+  async function refreshProductList() {
+    await fetch('product', { 'Content-Type': 'application/json' })
       .then((resp) => resp.json())
       .then((result) => {
         console.log(result);
@@ -25,32 +25,39 @@ export default function AdminPanel() {
   }
 
   const addOrEdit = (formData, onSuccess) => {
+    console.log(formData);
     if (formData.get('guid') === '0')
-      fetch('https://localhost:44373/api/Product/', {
+      fetch('product', {
         method: 'POST',
         body: formData,
+        'Content-Type': 'application/json',
       })
         .then((res) => {
+          console.log(res);
           refreshProductList();
           doResetForm(true);
-          toast.success(`Item is created! `, {
-            autoClose: 3000,
-            position: 'top-right',
-          });
+          if (res.status === 200) {
+            toast.success(`Item is created! `, {
+              autoClose: 3000,
+              position: 'top-right',
+            });
+          }
         })
         .catch((err) => console.log(err));
     else
-      fetch('https://localhost:44373/api/Product/', {
+      fetch('product', {
         method: 'PUT',
         body: formData,
       })
         .then((res) => {
           refreshProductList();
           doResetForm(true);
-          toast.success(`Item is updated! `, {
-            autoClose: 3000,
-            position: 'top-right',
-          });
+          if (res.status === 200) {
+            toast.success(`Item is updated! `, {
+              autoClose: 3000,
+              position: 'top-right',
+            });
+          }
         })
         .catch((err) => console.log(err));
   };
@@ -61,7 +68,7 @@ export default function AdminPanel() {
 
   const onDelete = (id) => {
     if (window.confirm('Are you sure to delete this record?'))
-      fetch(`https://localhost:44373/api/Product/${id}`, {
+      fetch(`product/${id}`, {
         method: 'DELETE',
       })
         .then((res) => {

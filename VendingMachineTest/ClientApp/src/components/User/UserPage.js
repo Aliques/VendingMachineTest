@@ -63,7 +63,7 @@ export class UserPage extends Component {
   };
 
   getProducts = () => {
-    fetch('https://localhost:44373/api/Product')
+    fetch('Product')
       .then((resp) => resp.json())
       .then((result) => {
         this.setState({
@@ -90,7 +90,7 @@ export class UserPage extends Component {
       this.state.productDataImmutable
     );
 
-    let resp = await fetch('https://localhost:44373/api/Product/quantity', {
+    let resp = await fetch('Product/quantity', {
       method: 'PUT',
       body: JSON.stringify(changedProducts),
       headers: {
@@ -106,7 +106,7 @@ export class UserPage extends Component {
     const change = this.state.deposit - totalCost;
     const coins = this.calcPaymentSum(change);
 
-    fetch('https://localhost:44373/api/Coins/deposit/', {
+    fetch('Coins/deposit/', {
       method: 'PUT',
       body: JSON.stringify(
         this.state.coinsData.map((x) => {

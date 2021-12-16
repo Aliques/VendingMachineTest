@@ -9,7 +9,7 @@ using VendingMachineTest.Domain.Interfaces.Services;
 
 namespace VendingMachineTest.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class CoinsController : ControllerBase
     {

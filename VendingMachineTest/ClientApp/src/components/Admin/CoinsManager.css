@@ -2,10 +2,6 @@
   display: flex;
   flex-direction: column;
 }
-.container {
-  max-width: 600px;
-}
-
 .coin-container input {
   width: 70px;
 }

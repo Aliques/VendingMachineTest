@@ -37,7 +37,7 @@ export class Basket extends Component {
           )}
           {this.props.cartItems.map((item) => (
             <div className={classes.itemContainer} key={item.guid}>
-              <div className={classes['item-name']}>{item.title}</div>
+              <div className={classes['item-name']}>{item.name}</div>
               <div className={classes['item-buttons']}>
                 <button
                   onClick={() => this.props.onAdd(item)}
@@ -67,8 +67,7 @@ export class Basket extends Component {
           <div className={classes['payment-btn-container']}>
             <button
               onClick={() => {
-                let status = this.props.toPay();
-                // status.then((o) => );
+                this.props.toPay();
               }}
             >
               To pay

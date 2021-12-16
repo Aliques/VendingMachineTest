@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import './CoinsManager.css';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -6,8 +6,6 @@ import 'react-toastify/dist/ReactToastify.css';
 export default function CoinsManager(props) {
   toast.configure();
 
-  const [errors, setErrors] = useState({});
-  const [updated, setUpdated] = useState(true);
   const [coinsData, setCoinsData] = useState([]);
   const [oneTotalCount, setOneTotalCount] = useState(0);
   const [twoTotalCount, setTwoTotalCount] = useState(0);
@@ -31,7 +29,7 @@ export default function CoinsManager(props) {
   };
 
   const getCoinStates = () => {
-    fetch('https://localhost:44373/api/Coins')
+    fetch('Coins')
       .then((resp) => resp.json())
       .then((result) => {
         console.log(result);
@@ -42,9 +40,7 @@ export default function CoinsManager(props) {
   };
 
   useEffect(() => {
-    if (coinsData.length === 0) {
-      getCoinStates();
-    }
+    getCoinStates();
   }, []);
 
   const handleFormSubmit = (e) => {
@@ -71,7 +67,7 @@ export default function CoinsManager(props) {
         isBlocked: tenStatus,
       },
     ];
-    fetch('https://localhost:44373/api/Coins', {
+    fetch('Coins', {
       method: 'PUT',
       body: JSON.stringify(coins),
       headers: {
@@ -87,7 +83,7 @@ export default function CoinsManager(props) {
   };
 
   const onStatusChange = (e) => {
-    const { name, value } = e.target;
+    const { name } = e.target;
     switch (name) {
       case 'refOneStatus':
         setOneStatus(!oneStatus);

@@ -29,7 +29,7 @@ export class Coins extends Component {
 
   componentDidMount() {
     this.setState({ isFetching: true });
-    fetch('https://localhost:44373/api/Coins')
+    fetch('Coins')
       .then((resp) => resp.json())
       .then((result) => {
         this.props.updateCoinsData(result);
