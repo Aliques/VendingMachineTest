@@ -4,7 +4,7 @@ export class Coins extends Component {
   constructor(props) {
     super();
     this.state = {
-      deposit: props.deposit,
+      // deposit: props.deposit,
       error: null,
       data: null,
       isFetching: false,
@@ -16,14 +16,9 @@ export class Coins extends Component {
   }
 
   depositMoney(value, isBlocked) {
-    let deposit = 0;
     if (!isBlocked) {
-      this.setState((state) => {
-        deposit = state.deposit + value;
-        this.props.depositChanged(deposit);
-        this.props.updateDepositCoins(value);
-        return { deposit: deposit };
-      });
+      this.props.depositChanged(this.props.deposit + value);
+      this.props.updateDepositCoins(value);
     }
   }
 

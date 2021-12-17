@@ -21,6 +21,13 @@ export class UserPage extends Component {
       error: null,
     };
   }
+
+  clearBasket = () => {
+    this.depositChanged(0);
+    this.setState({ cartItems: [], deposit: 0 });
+    return 0;
+  };
+
   calculateTotalCost = () => {
     let total = this.state.cartItems.reduce((a, c) => a + c.cost * c.qty, 0);
     this.setState({
@@ -288,6 +295,7 @@ export class UserPage extends Component {
       <div className={classes.container}>
         <ProductList productData={this.state.productData} onAdd={this.onAdd} />
         <Basket
+          clearBasket={this.clearBasket}
           updateDepositCoins={this.updateDepositCoins}
           updateCoinsData={this.updateCoinsData}
           depositedCoinsChanged={this.depositedCoinsChanged}

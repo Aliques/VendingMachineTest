@@ -92,3 +92,11 @@
   width: 0px; /* ширина scrollbar'a */
   background: transparent; /* опционально */
 }
+.cansel-btn__container {
+  margin-top: 50px;
+  text-align: center;
+}
+.cansel-btn {
+  height: 50px;
+  width: 250px;
+}

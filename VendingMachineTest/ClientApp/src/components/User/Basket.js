@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
-import classes from './Basket.module.css';
+import './Basket.css';
 import { Coins } from './Coins';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 export class Basket extends Component {
   constructor(props) {
     super();
+    toast.configure();
     this.state = {
       totalCost: 0,
       paymentStatus: 0,
@@ -24,30 +28,40 @@ export class Basket extends Component {
     });
   };
 
+  canselAndRefundMoney = () => {
+    if (window.confirm('Cancel the purchase and refund the money?')) {
+      this.props.clearBasket();
+      toast.success(`Success`, {
+        autoClose: 5000,
+        position: 'top-right',
+      });
+    }
+  };
+
   componentWillReceiveProps(nextProps) {
     this.setState({ cartItems: nextProps.cartItems }, this.calculateTotalCost);
   }
   render() {
     return (
       <div>
-        <div className={classes['basket-container']}>
-          <div className={classes.title}>Your choice</div>
+        <div className="basket-container">
+          <div className="title">Your choice</div>
           {this.props.cartItems.length === 0 && (
-            <div className={classes['empty-dialog']}>Select drinks</div>
+            <div className="empty-dialog">Select drinks</div>
           )}
           {this.props.cartItems.map((item) => (
-            <div className={classes.itemContainer} key={item.guid}>
-              <div className={classes['item-name']}>{item.name}</div>
-              <div className={classes['item-buttons']}>
+            <div className="itemContainer" key={item.guid}>
+              <div className="item-name">{item.name}</div>
+              <div className="item-buttons">
                 <button
                   onClick={() => this.props.onAdd(item)}
-                  className={classes['item-add__btn']}
+                  className="item-add__btn"
                 >
                   +
                 </button>
                 <button
                   onClick={() => this.props.onRemove(item)}
-                  className={classes['item-remove__btn']}
+                  className="item-remove__btn"
                 >
                   -
                 </button>
@@ -59,12 +73,10 @@ export class Basket extends Component {
           ))}
         </div>
         {this.props.cartItems.length !== 0 && (
-          <div className={classes.total}>
-            Total cost: {this.state.totalCost} ¥
-          </div>
+          <div className="total">Total cost: {this.state.totalCost} ¥</div>
         )}
         {this.props.cartItems.length !== 0 && (
-          <div className={classes['payment-btn-container']}>
+          <div className="payment-btn-container">
             <button
               onClick={() => {
                 this.props.toPay();
@@ -81,6 +93,16 @@ export class Basket extends Component {
           deposit={this.props.deposit}
           depositChanged={this.depositChanged}
         />
+        {this.props.deposit > 0 && (
+          <div className="cansel-btn__container">
+            <button
+              className="common-control-styles cansel-btn"
+              onClick={this.canselAndRefundMoney}
+            >
+              Cancel and refund the money
+            </button>
+          </div>
+        )}
       </div>
     );
   }

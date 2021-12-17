@@ -17,7 +17,7 @@ export class Layout extends Component {
           </div>
         </div>
         <div className="content-container">
-          <Redirect exact from="/" to="admin" />
+          <Redirect exact from="/" to="user" />
           <Route path="/user">
             <UserPage />
           </Route>

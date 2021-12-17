@@ -18,14 +18,12 @@ export default function AdminPanel() {
     await fetch('product', { 'Content-Type': 'application/json' })
       .then((resp) => resp.json())
       .then((result) => {
-        console.log(result);
         setProductList(result);
       })
       .catch((err) => console.log(err));
   }
 
   const addOrEdit = (formData, onSuccess) => {
-    console.log(formData);
     if (formData.get('guid') === '0')
       fetch('product', {
         method: 'POST',
@@ -33,7 +31,6 @@ export default function AdminPanel() {
         'Content-Type': 'application/json',
       })
         .then((res) => {
-          console.log(res);
           refreshProductList();
           doResetForm(true);
           if (res.status === 200) {

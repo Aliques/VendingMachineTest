@@ -32,7 +32,6 @@ export default function CoinsManager(props) {
     fetch('Coins')
       .then((resp) => resp.json())
       .then((result) => {
-        console.log(result);
         setCoinsData(result.sort((prev, next) => prev.value - next.value));
         initRefs(result);
       })

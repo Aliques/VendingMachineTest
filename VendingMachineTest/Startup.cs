@@ -66,7 +66,7 @@ namespace VendingMachineTest
             app.UseHttpsRedirection();
             app.UseStaticFiles(new StaticFileOptions
             {
-                //FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath,"Images")),
+                FileProvider = new PhysicalFileProvider(Path.Combine(env.ContentRootPath,"Images")),
                 RequestPath = "/Images"
             });
             app.UseSpaStaticFiles();
